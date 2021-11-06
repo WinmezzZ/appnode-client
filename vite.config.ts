@@ -6,18 +6,33 @@ import path from 'path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@': path.join(__dirname, 'src'),
+      '~': path.join(__dirname, 'src'),
     },
   },
   server: {
     port: 8889,
+    proxy: {
+      '/api': {
+        target: 'http://47.101.33.221:8888/',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, 'api'),
+      },
+    },
   },
   plugins: [
     react({
       jsxImportSource: '@emotion/react',
       babel: {
-        plugins: ['@emotion/babel-plugin', ['import', { libraryName: '@geist-ui/react', libraryDirectory: 'esm' }]],
+        plugins: ['@emotion/babel-plugin'],
       },
     }),
   ],
+  css: {
+    preprocessorOptions: {
+      less: {
+        // 支持内联 JavaScript
+        javascriptEnabled: true,
+      },
+    },
+  },
 });
