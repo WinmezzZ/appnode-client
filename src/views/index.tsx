@@ -17,7 +17,7 @@ const LayoutPage: FC = () => {
     text: item.PanelName,
     itemKey: item.PanelCode,
   }));
-  const [selectKey, setSelectkey] = useState<React.ReactText>(() => {
+  const [selectNavKey, serSelectNavKey] = useState<React.ReactText>(() => {
     const index0 = getStrTimesIndex(location.pathname, '/', 0);
     const index1 = getStrTimesIndex(location.pathname, '/', 1);
     const activeKey = location.pathname.slice(index0 + 1, index1 > 0 ? index0 : location.pathname.length);
@@ -26,8 +26,15 @@ const LayoutPage: FC = () => {
   });
   const [navSideMenu, setNavSideMenu] = useState<NavItemProps[]>([]);
 
+  const [selectNavSideMenuKey, setSelectNavSideMenuKey] = useState<React.ReactText>(() => {
+    const index1 = getStrTimesIndex(location.pathname, '/', 1);
+    const index2 = getStrTimesIndex(location.pathname, '/', 2);
+    const activeKey = location.pathname.slice(index1 + 1, index2 > 0 ? index1 : location.pathname.length);
+    return activeKey;
+  });
+
   useEffect(() => {
-    const panel = panelData.find(item => item.PanelCode === (selectKey as string));
+    const panel = panelData.find(item => item.PanelCode === (selectNavKey as string));
     if (panel) {
       const menu = panel.Menus.map(item => ({
         text: item.name,
@@ -35,19 +42,20 @@ const LayoutPage: FC = () => {
         url: item.url,
       }));
       setNavSideMenu(menu);
-      navigate(selectKey as string);
+      setSelectNavSideMenuKey(menu[0].itemKey);
+      navigate((selectNavKey + '/' + menu[0].url) as string);
     }
-  }, [selectKey]);
+  }, [selectNavKey]);
 
   const onClickNav: NavProps['onClick'] = ({ itemKey }) => {
-    setSelectkey(itemKey);
+    serSelectNavKey(itemKey);
   };
 
   return (
     <Layout style={{ border: '1px solid var(--semi-color-border)' }}>
       <Header style={{ backgroundColor: 'var(--semi-color-bg-1)' }}>
         <div>
-          <Nav mode="horizontal" selectedKeys={[selectKey]} items={navItems} onClick={onClickNav}>
+          <Nav mode="horizontal" selectedKeys={[selectNavKey]} items={navItems} onClick={onClickNav}>
             <Nav.Header>
               <Title style={{ width: '100px' }} heading={3}>
                 APPNODE
@@ -82,7 +90,7 @@ const LayoutPage: FC = () => {
         <Sider style={{ backgroundColor: 'var(--semi-color-bg-1)' }}>
           <Nav
             style={{ maxWidth: 190, height: '100%' }}
-            defaultSelectedKeys={['Home']}
+            defaultSelectedKeys={[selectNavSideMenuKey]}
             items={navSideMenu}
             footer={{
               collapseButton: true,
