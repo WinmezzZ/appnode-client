@@ -1,48 +1,59 @@
-import { FC } from 'react';
-import { Outlet } from 'react-router';
+import { FC, Suspense, useEffect, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import React from 'react';
 import { Layout, Nav, Button, Breadcrumb, Skeleton, Avatar, Typography } from '@douyinfe/semi-ui';
-import {
-  IconSemiLogo,
-  IconBell,
-  IconHelpCircle,
-  IconHome,
-  IconHistogram,
-  IconLive,
-  IconSetting,
-} from '@douyinfe/semi-icons';
+import { IconBell, IconHelpCircle } from '@douyinfe/semi-icons';
+import { NavItemProps, NavProps } from '@douyinfe/semi-ui/lib/es/navigation';
+import { panelData } from '~/config/data/panel';
+import { getStrTimesIndex } from '~/utils/getStrTimesIndex';
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
 
 const LayoutPage: FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const navItems: NavItemProps[] = panelData.map(item => ({
+    text: item.PanelName,
+    itemKey: item.PanelCode,
+  }));
+  const [selectKey, setSelectkey] = useState<React.ReactText>(() => {
+    const index0 = getStrTimesIndex(location.pathname, '/', 0);
+    const index1 = getStrTimesIndex(location.pathname, '/', 1);
+    const activeKey = location.pathname.slice(index0 + 1, index1 > 0 ? index0 : location.pathname.length);
+
+    return activeKey;
+  });
+  const [navSideMenu, setNavSideMenu] = useState<NavItemProps[]>([]);
+
+  useEffect(() => {
+    const panel = panelData.find(item => item.PanelCode === (selectKey as string));
+    if (panel) {
+      const menu = panel.Menus.map(item => ({
+        text: item.name,
+        itemKey: item.code,
+        url: item.url,
+      }));
+      setNavSideMenu(menu);
+      navigate(selectKey as string);
+    }
+  }, [selectKey]);
+
+  const onClickNav: NavProps['onClick'] = ({ itemKey }) => {
+    setSelectkey(itemKey);
+  };
+
   return (
     <Layout style={{ border: '1px solid var(--semi-color-border)' }}>
       <Header style={{ backgroundColor: 'var(--semi-color-bg-1)' }}>
         <div>
-          <Nav mode="horizontal" defaultSelectedKeys={['Home']}>
+          <Nav mode="horizontal" selectedKeys={[selectKey]} items={navItems} onClick={onClickNav}>
             <Nav.Header>
               <Title style={{ width: '100px' }} heading={3}>
                 APPNODE
               </Title>
             </Nav.Header>
-            <span
-              style={{
-                color: 'var(--semi-color-text-2)',
-              }}
-            >
-              <span
-                style={{
-                  marginRight: '24px',
-                  color: 'var(--semi-color-text-0)',
-                  fontWeight: 600,
-                }}
-              >
-                模版推荐
-              </span>
-              <span style={{ marginRight: '24px' }}>所有模版</span>
-              <span>我的模版</span>
-            </span>
+
             <Nav.Footer>
               <Button
                 theme="borderless"
@@ -70,14 +81,9 @@ const LayoutPage: FC = () => {
       <Layout>
         <Sider style={{ backgroundColor: 'var(--semi-color-bg-1)' }}>
           <Nav
-            style={{ maxWidth: 220, height: '100%' }}
+            style={{ maxWidth: 190, height: '100%' }}
             defaultSelectedKeys={['Home']}
-            items={[
-              { itemKey: 'Home', text: '首页', icon: <IconHome size="large" /> },
-              { itemKey: 'Histogram', text: '基础数据', icon: <IconHistogram size="large" /> },
-              { itemKey: 'Live', text: '测试功能', icon: <IconLive size="large" /> },
-              { itemKey: 'Setting', text: '设置', icon: <IconSetting size="large" /> },
-            ]}
+            items={navSideMenu}
             footer={{
               collapseButton: true,
             }}
@@ -103,10 +109,16 @@ const LayoutPage: FC = () => {
               padding: '32px',
             }}
           >
-            <Skeleton placeholder={<Skeleton.Paragraph rows={2} />} loading={true}>
-              <p>Hi, Bytedance dance dance.</p>
-              <p>Hi, Bytedance dance dance.</p>
-            </Skeleton>
+            <Suspense
+              fallback={
+                <Skeleton placeholder={<Skeleton.Paragraph rows={2} />} loading={true}>
+                  <p>Hi, Bytedance dance dance.</p>
+                  <p>Hi, Bytedance dance dance.</p>
+                </Skeleton>
+              }
+            >
+              <Outlet />
+            </Suspense>
           </div>
         </Content>
       </Layout>

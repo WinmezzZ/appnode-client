@@ -3,6 +3,9 @@ import { Form, Button } from '@douyinfe/semi-ui';
 import { apiLogin } from '~/api/ccenter-app-usermgr/user';
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { setUserState } from '~/store/user.store';
+import JSCookie from 'js-cookie';
 
 const initValues = {
   Username: 'admin',
@@ -11,10 +14,17 @@ const initValues = {
 };
 
 const LoginForm: FC = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const onSubmit = async (form: any) => {
     const res = await apiLogin(form);
     if (res.CODE === 'ok') {
+      JSCookie.set('CSRFToken', res.DATA.CSRFToken);
+      dispatch(
+        setUserState({
+          CSRFToken: res.DATA.CSRFToken,
+        }),
+      );
       navigate('/');
     }
   };

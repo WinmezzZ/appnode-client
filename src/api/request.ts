@@ -1,14 +1,22 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Toast } from '@douyinfe/semi-ui';
 import qs from 'query-string';
-// import { history } from 'routes/history';
+import { history } from '~/route/history';
+import store from '~/store';
 
 const axiosInstance = axios.create({
+  withCredentials: true,
   timeout: 6000,
+  headers: {
+    'X-CSRF-TOKEN': store.getState().user.CSRFToken || '',
+  },
 });
 
 axiosInstance.interceptors.request.use(
   config => {
+    if (history.location.pathname !== '/login') {
+      //
+    }
     return config;
   },
   error => {
