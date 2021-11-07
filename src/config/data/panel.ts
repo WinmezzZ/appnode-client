@@ -19,7 +19,7 @@ export const panelData = [
     Menus: [
       {
         name: '节点列表',
-        url: '',
+        url: 'list',
         code: 'list',
       },
       {
@@ -54,7 +54,7 @@ export const panelData = [
     Menus: [
       {
         name: '用户列表',
-        url: '',
+        url: 'list',
         code: 'list',
       },
       {
@@ -89,7 +89,7 @@ export const panelData = [
     Menus: [
       {
         name: '受控端',
-        url: '',
+        url: 'agent',
         code: 'agent',
       },
       {
@@ -119,7 +119,7 @@ export const panelData = [
     Menus: [
       {
         name: '所有软件',
-        url: '',
+        url: 'list-all',
         code: 'list-all',
       },
       {
@@ -159,7 +159,7 @@ export const panelData = [
     Menus: [
       {
         name: '文件对传',
-        url: '',
+        url: 'file',
         code: 'file',
       },
       {

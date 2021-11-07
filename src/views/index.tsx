@@ -1,9 +1,8 @@
 import { FC, Suspense, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import React from 'react';
 import { Layout, Nav, Button, Breadcrumb, Skeleton, Avatar, Typography } from '@douyinfe/semi-ui';
 import { IconBell, IconHelpCircle } from '@douyinfe/semi-icons';
-import { NavItemProps, NavProps } from '@douyinfe/semi-ui/lib/es/navigation';
+import { NavItemProps } from '@douyinfe/semi-ui/lib/es/navigation';
 import { panelData } from '~/config/data/panel';
 import { getStrTimesIndex } from '~/utils/getStrTimesIndex';
 
@@ -17,7 +16,7 @@ const LayoutPage: FC = () => {
     text: item.PanelName,
     itemKey: item.PanelCode,
   }));
-  const [selectNavKey, serSelectNavKey] = useState<React.ReactText>(() => {
+  const [selectNavKey, setSelectNavKey] = useState<string>(() => {
     const index0 = getStrTimesIndex(location.pathname, '/', 0);
     const index1 = getStrTimesIndex(location.pathname, '/', 1);
     const activeKey = location.pathname.slice(index0 + 1, index1 > 0 ? index0 : location.pathname.length);
@@ -26,7 +25,7 @@ const LayoutPage: FC = () => {
   });
   const [navSideMenu, setNavSideMenu] = useState<NavItemProps[]>([]);
 
-  const [selectNavSideMenuKey, setSelectNavSideMenuKey] = useState<React.ReactText>(() => {
+  const [selectNavSideMenuKey, setSelectNavSideMenuKey] = useState<string>(() => {
     const index1 = getStrTimesIndex(location.pathname, '/', 1);
     const index2 = getStrTimesIndex(location.pathname, '/', 2);
     const activeKey = location.pathname.slice(index1 + 1, index2 > 0 ? index1 : location.pathname.length);
@@ -34,28 +33,45 @@ const LayoutPage: FC = () => {
   });
 
   useEffect(() => {
-    const panel = panelData.find(item => item.PanelCode === (selectNavKey as string));
-    if (panel) {
-      const menu = panel.Menus.map(item => ({
-        text: item.name,
-        itemKey: item.code,
-        url: item.url,
-      }));
+    onClickNav(selectNavKey, 0);
+  }, []);
+
+  const onClickNav = (itemKey: string, level: number) => {
+    const panel = panelData.find(item => item.PanelCode === (level === 0 ? itemKey : selectNavKey));
+
+    if (!panel) return;
+
+    const menu = panel.Menus.map(item => ({
+      text: item.name,
+      itemKey: item.code,
+      url: item.url,
+    }));
+    if (level === 0) {
+      setSelectNavKey(itemKey);
       setNavSideMenu(menu);
       setSelectNavSideMenuKey(menu[0].itemKey);
-      navigate((selectNavKey + '/' + menu[0].url) as string);
+      navigate('/' + itemKey);
+      return;
     }
-  }, [selectNavKey]);
 
-  const onClickNav: NavProps['onClick'] = ({ itemKey }) => {
-    serSelectNavKey(itemKey);
+    if (level === 1) {
+      setSelectNavSideMenuKey(itemKey);
+      const level1Url = '/' + selectNavKey;
+      const level2Url = `/${itemKey}`;
+      navigate(level1Url + level2Url);
+    }
   };
 
   return (
     <Layout style={{ border: '1px solid var(--semi-color-border)' }}>
       <Header style={{ backgroundColor: 'var(--semi-color-bg-1)' }}>
         <div>
-          <Nav mode="horizontal" selectedKeys={[selectNavKey]} items={navItems} onClick={onClickNav}>
+          <Nav
+            mode="horizontal"
+            selectedKeys={[selectNavKey]}
+            items={navItems}
+            onClick={d => onClickNav(d.itemKey as string, 0)}
+          >
             <Nav.Header>
               <Title style={{ width: '100px' }} heading={3}>
                 APPNODE
@@ -89,6 +105,7 @@ const LayoutPage: FC = () => {
       <Layout>
         <Sider style={{ backgroundColor: 'var(--semi-color-bg-1)' }}>
           <Nav
+            onClick={d => onClickNav(d.itemKey as string, 1)}
             style={{ maxWidth: 190, height: '100%' }}
             defaultSelectedKeys={[selectNavSideMenuKey]}
             items={navSideMenu}
