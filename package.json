@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint . --ext ts --ext tsx --ext js",
     "format": "prettier --write **/*.{js,ts,tsx}"
