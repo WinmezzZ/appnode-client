@@ -1,6 +1,7 @@
-import { lazy, FC } from 'react';
-import LoginPage from '~/views/user/login';
+import { FC, lazy } from 'react';
 import { RouteObject, useRoutes } from 'react-router-dom';
+
+import LoginPage from '~/views/user/login';
 
 const LayoutPage = lazy(() => import('~/views/index'));
 const NodeManageNodeListPage = lazy(() => import('~/views/nodemgr'));
@@ -29,6 +30,7 @@ const routeList: RouteObject[] = [
 
 const RenderRouter: FC = () => {
   const element = useRoutes(routeList);
+
   return element;
 };
 

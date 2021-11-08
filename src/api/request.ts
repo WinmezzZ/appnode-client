@@ -1,6 +1,7 @@
-import axios, { AxiosRequestConfig } from 'axios';
 import { Toast } from '@douyinfe/semi-ui';
+import axios, { AxiosRequestConfig } from 'axios';
 import qs from 'query-string';
+
 import { history } from '~/route/history';
 import store from '~/store';
 
@@ -17,6 +18,7 @@ axiosInstance.interceptors.request.use(
     if (history.location.pathname !== '/login') {
       //
     }
+
     return config;
   },
   error => {
@@ -29,12 +31,14 @@ axiosInstance.interceptors.response.use(
     if (config.data?.CODE !== 'ok') {
       Toast.error(config.data.MESSAGE);
     }
+
     return config?.data;
   },
   error => {
     // if needs to navigate to login page when request exception
     // history.replace('/login');
     let errorMessage = '系统异常';
+
     if (error?.message?.includes('Network Error')) {
       errorMessage = '网络错误，请检查您的网络';
     } else {
@@ -42,6 +46,7 @@ axiosInstance.interceptors.response.use(
     }
     console.dir(error);
     error.message && Toast.error(errorMessage);
+
     return {
       ACTION: false,
       CODE: 'ERROR',
@@ -75,6 +80,7 @@ export const request = <T = any>(
   config?: AxiosRequestConfig,
 ): MyResponse<T> => {
   const params = Object.assign(data, { api_action: url });
+
   if (method === 'post') {
     return axiosInstance.post('api', qs.stringify(params), config);
   } else {

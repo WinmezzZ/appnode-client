@@ -1,8 +1,9 @@
+import { IconBell, IconHelpCircle } from '@douyinfe/semi-icons';
+import { Avatar, Breadcrumb, Button, Layout, Nav, Skeleton, Typography } from '@douyinfe/semi-ui';
+import { NavItemProps } from '@douyinfe/semi-ui/lib/es/navigation';
 import { FC, Suspense, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import { Layout, Nav, Button, Breadcrumb, Skeleton, Avatar, Typography } from '@douyinfe/semi-ui';
-import { IconBell, IconHelpCircle } from '@douyinfe/semi-icons';
-import { NavItemProps } from '@douyinfe/semi-ui/lib/es/navigation';
+
 import { panelData } from '~/config/data/panel';
 import { getStrTimesIndex } from '~/utils/getStrTimesIndex';
 
@@ -29,6 +30,7 @@ const LayoutPage: FC = () => {
     const index1 = getStrTimesIndex(location.pathname, '/', 1);
     const index2 = getStrTimesIndex(location.pathname, '/', 2);
     const activeKey = location.pathname.slice(index1 + 1, index2 > 0 ? index1 : location.pathname.length);
+
     return activeKey;
   });
 
@@ -46,11 +48,13 @@ const LayoutPage: FC = () => {
       itemKey: item.code,
       url: item.url,
     }));
+
     if (level === 0) {
       setSelectNavKey(itemKey);
       setNavSideMenu(menu);
       setSelectNavSideMenuKey(menu[0].itemKey);
       navigate('/' + itemKey);
+
       return;
     }
 
@@ -58,6 +62,7 @@ const LayoutPage: FC = () => {
       setSelectNavSideMenuKey(itemKey);
       const level1Url = '/' + selectNavKey;
       const level2Url = `/${itemKey}`;
+
       navigate(level1Url + level2Url);
     }
   };

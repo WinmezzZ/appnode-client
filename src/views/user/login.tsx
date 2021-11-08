@@ -1,11 +1,12 @@
-import { FC } from 'react';
-import { Form, Button } from '@douyinfe/semi-ui';
-import { apiLogin } from '~/api/ccenter-app-usermgr/user';
+import { Button, Form } from '@douyinfe/semi-ui';
 import { css } from '@emotion/react';
-import { useNavigate } from 'react-router';
-import { useDispatch } from 'react-redux';
-import { setUserState } from '~/store/user.store';
 import JSCookie from 'js-cookie';
+import { FC } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
+
+import { apiLogin } from '~/api/ccenter-app-usermgr/user';
+import { setUserState } from '~/store/user.store';
 
 const initValues = {
   Username: 'admin',
@@ -16,8 +17,10 @@ const initValues = {
 const LoginForm: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const onSubmit = async (form: any) => {
     const res = await apiLogin(form);
+
     if (res.CODE === 'ok') {
       JSCookie.set('CSRFToken', res.DATA.CSRFToken);
       dispatch(
