@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import JSCookie from 'js-cookie';
 import { FC } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 import { apiLogin } from '~/api/ccenter-app-usermgr/user';
 import { setUserState } from '~/store/user.store';
@@ -17,6 +17,9 @@ const initValues = {
 const LoginForm: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  console.log(location);
 
   const onSubmit = async (form: any) => {
     const res = await apiLogin(form);
@@ -28,7 +31,11 @@ const LoginForm: FC = () => {
           CSRFToken: res.DATA.CSRFToken,
         }),
       );
-      navigate('/');
+      if (location.state.from) {
+        navigate(location.state.from);
+      } else {
+        navigate('/');
+      }
     }
   };
 

@@ -1,5 +1,5 @@
 import { IconBell, IconHelpCircle } from '@douyinfe/semi-icons';
-import { Avatar, Breadcrumb, Button, Layout, Nav, Skeleton, Typography } from '@douyinfe/semi-ui';
+import { Avatar, Button, Layout, Nav, Skeleton, Typography } from '@douyinfe/semi-ui';
 import { NavItemProps } from '@douyinfe/semi-ui/lib/es/navigation';
 import { FC, Suspense, useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
@@ -20,7 +20,7 @@ const LayoutPage: FC = () => {
   const [selectNavKey, setSelectNavKey] = useState<string>(() => {
     const index0 = getStrTimesIndex(location.pathname, '/', 0);
     const index1 = getStrTimesIndex(location.pathname, '/', 1);
-    const activeKey = location.pathname.slice(index0 + 1, index1 > 0 ? index0 : location.pathname.length);
+    const activeKey = location.pathname.slice(index0 + 1, index1 > 0 ? index1 : location.pathname.length);
 
     return activeKey;
   });
@@ -125,12 +125,6 @@ const LayoutPage: FC = () => {
             backgroundColor: 'var(--semi-color-bg-0)',
           }}
         >
-          <Breadcrumb
-            style={{
-              marginBottom: '24px',
-            }}
-            routes={['首页', '当这个页面标题很长时需要省略', '上一页', '详情页']}
-          />
           <div
             style={{
               borderRadius: '10px',

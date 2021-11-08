@@ -30,6 +30,12 @@ axiosInstance.interceptors.response.use(
   config => {
     if (config.data?.CODE !== 'ok') {
       Toast.error(config.data.MESSAGE);
+
+      if (config.data?.CODE === 'SessionNotAuthed') {
+        history.replace('/login', {
+          from: history.location.pathname,
+        });
+      }
     }
 
     return config?.data;
