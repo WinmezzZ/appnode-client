@@ -31,8 +31,8 @@ const LoginForm: FC = () => {
           CSRFToken: res.DATA.CSRFToken,
         }),
       );
-      if (location.state.from) {
-        navigate(location.state.from);
+      if (location.state?.from) {
+        navigate(location.state?.from);
       } else {
         navigate('/');
       }

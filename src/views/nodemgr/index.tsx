@@ -2,6 +2,33 @@ import { Table } from '@douyinfe/semi-ui';
 import { FC, useEffect, useState } from 'react';
 
 import { apiNodeList, NodeList } from '~/api/ccenter-app-nodemgr/node';
+import { socket } from '~/api/socket';
+
+const ws = socket('Node.SubscribePerformance');
+
+ws.onerror = e => {
+  console.log('err:', e);
+};
+
+ws.addEventListener('open', () => {
+  console.log('WebSocket连接成功');
+  ws.send('{"a":"watch","d":{"NodeId":["9"]}}');
+
+  // ws.send(
+  //   JSON.stringify({
+  //     headers: {
+  //       Authorization: 'Bearer TOKEN',
+  //       'x-ms-client-request-id': 'CLIENT_ID',
+  //     },
+  //   }),
+  // );
+
+  console.log('WebSocket连接成功11');
+});
+
+ws.onmessage = data => {
+  console.log(data);
+};
 
 const columns = [
   {
