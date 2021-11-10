@@ -16,6 +16,10 @@ const routeList: RouteObject[] = [
     element: <LayoutPage />,
     children: [
       {
+        path: '',
+        element: <NodeManageNodeListPage />,
+      },
+      {
         path: 'nodemgr',
         element: <NodeManageNodeListPage />,
       },

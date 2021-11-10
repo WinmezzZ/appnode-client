@@ -1,5 +1,6 @@
 import { Toast } from '@douyinfe/semi-ui';
 import axios, { AxiosRequestConfig } from 'axios';
+import Cookies from 'js-cookie';
 import qs from 'query-string';
 
 import { history } from '~/route/history';
@@ -32,6 +33,7 @@ axiosInstance.interceptors.response.use(
       Toast.error(config.data.MESSAGE);
 
       if (config.data?.CODE === 'SessionNotAuthed') {
+        Cookies.remove('CSRFToken');
         history.replace('/login', {
           from: history.location.pathname,
         });

@@ -8,10 +8,10 @@ import store from './store';
 import './style/index.css';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <StoreProvider store={store}>
-      <App />
-    </StoreProvider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <StoreProvider store={store}>
+    <App />
+  </StoreProvider>,
+  // </React.StrictMode>
   document.getElementById('root'),
 );

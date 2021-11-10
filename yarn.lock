@@ -2225,6 +2225,11 @@ react-sortable-hoc@^1.11.0:
     invariant "^2.2.4"
     prop-types "^15.5.7"
 
+react-use-websocket@^2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/react-use-websocket/-/react-use-websocket-2.9.1.tgz#ef4a73a618b24f2a5875829ac0a0a0573c524710"
+  integrity sha512-jV6OxXuxWi6BiPVlbAJd/uWNaoQwkeGARFO9f6HidJeWUatB4J2UopbxI/fduiGpcpHGhRAmpLdfVjeRzrcTnQ==
+
 react-window@^1.8.2:
   version "1.8.6"
   resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.6.tgz#d011950ac643a994118632665aad0c6382e2a112"
