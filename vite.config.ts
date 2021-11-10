@@ -13,7 +13,7 @@ export default defineConfig({
     port: 8889,
     proxy: {
       '/api': {
-        target: 'http://47.101.33.221:8888/',
+        target: 'https://console.hyyar.com/',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, 'api'),
       },

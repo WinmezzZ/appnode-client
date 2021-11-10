@@ -7,7 +7,7 @@ const query = {
 };
 
 export const socket = (url: string) => {
-  const io = new WebSocket(`ws://47.101.33.221:8888/api?api_action=${url}&${new URLSearchParams(query)}`);
+  const io = new WebSocket(`wss://console-api.hyyar.com/api?api_action=${url}&${new URLSearchParams(query)}`);
 
   return io;
 };

@@ -10,6 +10,10 @@ ws.onerror = e => {
   console.log('err:', e);
 };
 
+ws.addEventListener('connect', function (e) {
+  console.log('connected!', e);
+});
+
 ws.addEventListener('open', () => {
   console.log('WebSocket连接成功');
   ws.send('{"a":"watch","d":{"NodeId":["9"]}}');
