@@ -9,15 +9,15 @@ import store from '~/store';
 const axiosInstance = axios.create({
   withCredentials: true,
   timeout: 6000,
-  headers: {
-    'X-CSRF-TOKEN': store.getState().user.CSRFToken || '',
-  },
 });
 
 axiosInstance.interceptors.request.use(
   config => {
     if (history.location.pathname !== '/login') {
       //
+      config.headers = {
+        'X-CSRF-TOKEN': store.getState().user.CSRFToken || '',
+      };
     }
 
     return config;
