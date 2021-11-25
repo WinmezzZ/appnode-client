@@ -4,28 +4,50 @@ import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import LoginPage from '~/views/user/login';
 
 const LayoutPage = lazy(() => import('~/views/index'));
-const NodeManageNodeListPage = lazy(() => import('~/views/nodemgr'));
+const NodeMgrPage = lazy(() => import('~/views/nodemgr/index'));
+const NodeMgrNodeListPage = lazy(() => import('~/views/nodemgr/node-list'));
+const NodeMgrNodeGroupListPage = lazy(() => import('~/views/nodemgr/node-group'));
 
 const routeList: RouteObject[] = [
   {
-    path: '/login',
+    path: 'login',
     element: <LoginPage />,
   },
   {
-    path: '/',
+    path: '',
+    caseSensitive: true,
     element: <LayoutPage />,
     children: [
       {
         path: '',
-        element: <Navigate to="/nodemgr" />,
+        caseSensitive: true,
+        element: <Navigate to="nodemgr" />,
       },
       {
         path: 'nodemgr',
-        element: <Navigate to="/nodemgr/list" />,
-      },
-      {
-        path: 'nodemgr/list',
-        element: <NodeManageNodeListPage />,
+        caseSensitive: true,
+        element: <NodeMgrPage />,
+        children: [
+          {
+            path: '',
+            caseSensitive: true,
+            element: <Navigate to="list" />,
+          },
+          {
+            path: 'list',
+            caseSensitive: true,
+            element: <NodeMgrNodeListPage />,
+          },
+          {
+            path: 'group',
+            caseSensitive: true,
+            element: <NodeMgrNodeGroupListPage />,
+          },
+          {
+            path: '*',
+            element: <h1>404</h1>,
+          },
+        ],
       },
 
       {
@@ -33,6 +55,10 @@ const routeList: RouteObject[] = [
         element: <h1>404</h1>,
       },
     ],
+  },
+  {
+    path: '*',
+    element: <h1>404</h1>,
   },
 ];
 

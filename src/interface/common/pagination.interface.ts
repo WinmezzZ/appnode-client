@@ -12,3 +12,10 @@ export type Pagination<K, V> = DataKeyValue<K, V> & {
   /** 总条数 */
   TotalCount: number;
 };
+
+export interface PageParams {
+  /** 页数 */
+  _pageNumber: number;
+  /** 每页条数 */
+  _pageSize: number;
+}

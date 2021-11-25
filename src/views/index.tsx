@@ -7,17 +7,18 @@ import {
   IconSun,
   IconUser,
 } from '@douyinfe/semi-icons';
-import { Button, Dropdown, Layout, Nav, Skeleton, Tooltip, Typography } from '@douyinfe/semi-ui';
+import { Button, Dropdown, Layout, Nav, Tooltip, Typography } from '@douyinfe/semi-ui';
 import { NavItemProps } from '@douyinfe/semi-ui/lib/es/navigation';
-import { FC, Suspense, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet, useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
+import { LayoutMainPage } from '~/components/layout-main-page';
 import { panelData } from '~/config/data/panel';
 import { setGlobalState } from '~/store/global.store';
 import { getStrTimesIndex } from '~/utils/getStrTimesIndex';
 
-const { Header, Sider, Content } = Layout;
+const { Header } = Layout;
 const { Title } = Typography;
 
 const LayoutPage: FC = () => {
@@ -47,10 +48,10 @@ const LayoutPage: FC = () => {
   });
 
   useEffect(() => {
-    onClickNav(selectNavKey, 0);
+    onClickNav(selectNavKey, 0, false);
   }, []);
 
-  const onClickNav = (itemKey: string, level: number) => {
+  const onClickNav = (itemKey: string, level: number, jump = true) => {
     const panel = panelData.find(item => item.PanelCode === (level === 0 ? itemKey : selectNavKey));
 
     if (!panel) return;
@@ -65,7 +66,7 @@ const LayoutPage: FC = () => {
       setSelectNavKey(itemKey);
       setNavSideMenu(menu);
       setSelectNavSideMenuKey(menu[0].itemKey);
-      navigate('/' + itemKey);
+      jump && navigate('/' + itemKey + '/' + menu[0].itemKey);
 
       return;
     }
@@ -75,7 +76,7 @@ const LayoutPage: FC = () => {
       const level1Url = '/' + selectNavKey;
       const level2Url = `/${itemKey}`;
 
-      navigate(level1Url + level2Url);
+      jump && navigate(level1Url + level2Url);
     }
   };
 
@@ -154,45 +155,12 @@ const LayoutPage: FC = () => {
           </Nav>
         </div>
       </Header>
-      <Layout>
-        <Sider style={{ backgroundColor: 'var(--semi-color-bg-1)' }}>
-          <Nav
-            onClick={d => onClickNav(d.itemKey as string, 1)}
-            style={{ maxWidth: 190, height: '100%' }}
-            defaultSelectedKeys={[selectNavSideMenuKey]}
-            items={navSideMenu}
-            footer={{
-              collapseButton: true,
-            }}
-          />
-        </Sider>
-        <Content
-          style={{
-            padding: '24px',
-            backgroundColor: 'var(--semi-color-bg-0)',
-          }}
-        >
-          <div
-            style={{
-              borderRadius: '10px',
-              border: '1px solid var(--semi-color-border)',
-              height: '376px',
-              padding: '32px',
-            }}
-          >
-            <Suspense
-              fallback={
-                <Skeleton placeholder={<Skeleton.Paragraph rows={2} />} loading={true}>
-                  <p>Hi, Bytedance dance dance.</p>
-                  <p>Hi, Bytedance dance dance.</p>
-                </Skeleton>
-              }
-            >
-              <Outlet />
-            </Suspense>
-          </div>
-        </Content>
-      </Layout>
+      <LayoutMainPage
+        menu={navSideMenu}
+        selectNavSideMenuKey={selectNavSideMenuKey}
+        onClickMenu={e => onClickNav(e.itemKey as string, 1)}
+        showWrpperStyle
+      />
     </Layout>
   );
 };
