@@ -1,32 +1,40 @@
 import { ConfigProvider } from '@douyinfe/semi-ui';
 import { Suspense, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { history, HistoryRouter } from '~/route/history';
 
 import RenderRouter from './route';
+import { setGlobalState } from './store/global.store';
 
 const App: React.FC = () => {
-  const { theme: _ } = useSelector(state => state.global);
+  const { theme } = useSelector(state => state.global);
+  const dispatch = useDispatch();
 
+  const setTheme = (dark = true) => {
+    dispatch(
+      setGlobalState({
+        theme: dark ? 'dark' : 'light',
+      }),
+    );
+  };
+
+  /** 初始设置主题 */
   useEffect(() => {
-    const mql = window.matchMedia('(prefers-color-scheme: dark)');
+    setTheme(theme === 'dark');
+  }, []);
 
-    function matchMode(e: MediaQueryListEvent) {
-      const body = document.body;
+  /** 监听系统主题改变，如果没手动设置过主题时 */
+  useEffect(() => {
+    if (!localStorage.getItem('theme')) {
+      const mql = window.matchMedia('(prefers-color-scheme: dark)');
 
-      if (e.matches) {
-        if (!body.hasAttribute('theme-mode')) {
-          body.setAttribute('theme-mode', 'dark');
-        }
-      } else {
-        if (body.hasAttribute('theme-mode')) {
-          body.removeAttribute('theme-mode');
-        }
+      function matchMode(e: MediaQueryListEvent) {
+        setTheme(e.matches);
       }
-    }
 
-    mql.addEventListener('change', matchMode);
+      mql.addEventListener('change', matchMode);
+    }
   }, []);
 
   return (
