@@ -1,3 +1,5 @@
+import { AgentConnStatusEnum } from '~/config/enum/agent-conn-status.enum';
+
 export interface ApiNodeListParams {
   _pageNumber: number;
   _pageSize: number;
@@ -23,7 +25,7 @@ export interface ApiNodeListParams {
 
 export interface NodeItem extends PerformanceItem {
   AgentConnError: string;
-  AgentConnStatus: string;
+  AgentConnStatus: keyof typeof AgentConnStatusEnum;
   AgentConnectAdminStatus: string;
   AgentConnectDomainName: string;
   AgentConnectHostname: string;
@@ -36,7 +38,7 @@ export interface NodeItem extends PerformanceItem {
   AgentRunningVersion: string;
   AgentVersion: string;
   BaseArch: string;
-  IsDefault: 'Y' | 'N';
+  IsDefault: YN;
   NodeGroupId: number;
   NodeGroupName: string;
   NodeId: number;

@@ -10,3 +10,7 @@ declare module 'react-redux' {
 declare interface ObjectConstructor {
   keys<T>(o: T): (keyof T)[];
 }
+
+declare global {
+  export type YN = 'Y' | 'N';
+}

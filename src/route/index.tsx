@@ -1,5 +1,5 @@
 import { FC, lazy } from 'react';
-import { RouteObject, useRoutes } from 'react-router-dom';
+import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 
 import LoginPage from '~/views/user/login';
 
@@ -17,11 +17,11 @@ const routeList: RouteObject[] = [
     children: [
       {
         path: '',
-        element: <NodeManageNodeListPage />,
+        element: <Navigate to="/nodemgr" />,
       },
       {
         path: 'nodemgr',
-        element: <NodeManageNodeListPage />,
+        element: <Navigate to="/nodemgr/list" />,
       },
       {
         path: 'nodemgr/list',
