@@ -8,11 +8,13 @@ import { useTable } from '~/hooks/useTable';
 
 const getStrokeColor = (rate: number) => {
   if (rate > 0.8) {
-    return '#f93920';
-  } else if (rate < 0.8 && rate > 0.2) {
-    return '#fc8800';
+    return '#ff0000';
+  } else if (rate < 0.8 && rate > 0.5) {
+    return '#ff6600';
+  } else if (rate < 0.5 && rate > 0.3) {
+    return '#66ccfff';
   } else {
-    return undefined;
+    return '02b080';
   }
 };
 
@@ -56,12 +58,12 @@ const columns: ColumnProps[] = [
     render(item) {
       return (
         <Progress
-          percent={+(item.MemUseRate * 100).toFixed(1) || 0}
+          percent={+(item.RealMemUseRate * 100).toFixed(1) || 0}
           style={{ height: '8px' }}
-          stroke={getStrokeColor(item.MemUseRate)}
+          stroke={getStrokeColor(item.RealMemUseRate)}
           showInfo={true}
         >
-          {item.MemUseRate && (item.MemUseRate * 100).toFixed(2) + '%'}
+          {item.RealMemUseRate && (item.RealMemUseRate * 100).toFixed(2) + '%'}
         </Progress>
       );
     },
@@ -115,7 +117,7 @@ const NodeManageNodeListPage: FC = () => {
             CPUUseRate: data[0],
             RealMemUsed: data[1],
             MemTotal: data[2],
-            MemUseRate: data[3],
+            RealMemUseRate: data[3],
             RXSpeed: data[4],
             TXSpeed: data[5],
             DiskUsed: data[6],

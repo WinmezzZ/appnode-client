@@ -73,7 +73,7 @@ interface PerformanceItem {
   CPUUseRate: number;
   RealMemUsed: string;
   MemTotal: string;
-  MemUseRate: number;
+  RealMemUseRate: number;
   RXSpeed: string;
   TXSpeed: string;
   DiskUsed: string;
@@ -87,7 +87,7 @@ export interface PerformanceResult {
       PerformanceItem['CPUUseRate'],
       PerformanceItem['RealMemUsed'],
       PerformanceItem['MemTotal'],
-      PerformanceItem['MemUseRate'],
+      PerformanceItem['RealMemUseRate'],
       PerformanceItem['RXSpeed'],
       PerformanceItem['TXSpeed'],
       PerformanceItem['DiskUsed'],

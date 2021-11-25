@@ -56,7 +56,7 @@ export const usePerformance: SocketEffect<PerformanceResult, { nodeIds: string[]
           'CPUUseRate',
           'MemUsed',
           'MemTotal',
-          'MemUseRate',
+          'RealMemUseRate',
           'RXSpeed',
           'TXSpeed',
           'DiskUsed',
