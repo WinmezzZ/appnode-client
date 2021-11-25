@@ -1,25 +1,14 @@
 import { useEffect } from 'react';
 
 import { ApiNodeListParams, NodeList, PerformanceResult } from '~/interface/ccenter-app-nodemgr/node.interface';
+import { Pagination } from '~/interface/common/pagination.interface';
 
 import { request } from '../request';
 import { SocketEffect, useSocket } from '../socket';
 
 /** 桌面菜单接口 */
 export const apiNodeList = (data: ApiNodeListParams) =>
-  request<ApiNodeListResult>('get', 'Node.List', { ...data, api_ccenter_app: 'nodemgr' });
-
-interface ApiNodeListResult {
-  NodeList: NodeList;
-  PageCount: number;
-  PageNumber: number;
-  PageSize: number;
-  ShowIndex: {
-    next: number;
-    prev: number;
-  };
-  TotalCount: number;
-}
+  request<Pagination<'NodeList', NodeList>>('get', 'Node.List', { ...data, api_ccenter_app: 'nodemgr' });
 
 export const usePerformance: SocketEffect<PerformanceResult, { nodeIds: string[] }> = (cb, { nodeIds }) => {
   const socket = useSocket(
@@ -36,6 +25,7 @@ export const usePerformance: SocketEffect<PerformanceResult, { nodeIds: string[]
 
   useEffect(() => {
     if (!nodeIds.length) return;
+    if (!socket) return;
     socket.sendJsonMessage({ a: 'watch', d: { NodeId: nodeIds } });
     socket.sendJsonMessage({
       a: 'subscribe',

@@ -1,10 +1,10 @@
 import { Progress, Table } from '@douyinfe/semi-ui';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { css } from '@emotion/react';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 
 import { apiNodeList, usePerformance } from '~/api/ccenter-app-nodemgr/node';
-import { NodeList } from '~/interface/ccenter-app-nodemgr/node.interface';
+import { useTable } from '~/hooks/useTable';
 
 const getStrokeColor = (rate: number) => {
   if (rate > 0.8) {
@@ -92,16 +92,15 @@ const columns: ColumnProps[] = [
 ];
 
 const NodeManageNodeListPage: FC = () => {
-  const [pageSize, setPageSize] = useState(20);
-  const [pageNum, setPageNum] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [nodeList, setNodeList] = useState<NodeList>([]);
-  const [loading, setLoading] = useState(false);
+  const { panination, tableData, setTableData, loading } = useTable({
+    apiMethod: apiNodeList,
+    resultListKeyPath: 'NodeList',
+  });
 
   usePerformance(
     res => {
-      if (!nodeList.length) return;
-      setNodeList(nodelst => {
+      if (!tableData.length) return;
+      setTableData(nodelst => {
         if (!Object.keys(res.d).length) return nodelst;
 
         return nodelst.map(node => {
@@ -127,53 +126,13 @@ const NodeManageNodeListPage: FC = () => {
       });
     },
     {
-      nodeIds: nodeList.map(node => node.NodeId.toString()),
+      nodeIds: tableData.map(node => node.NodeId.toString()),
     },
   );
 
-  const getData = async (currentPage = pageNum, currentSize = pageSize) => {
-    setLoading(true);
-    const res = await apiNodeList({
-      _pageNumber: currentPage,
-      _pageSize: currentSize,
-    });
-
-    setLoading(false);
-
-    if (res.CODE === 'ok') {
-      setNodeList(res.DATA.NodeList);
-      setTotal(res.DATA.TotalCount);
-    }
-  };
-
-  const onChange = (currentPage: number, pageSize: number) => {
-    setPageNum(currentPage);
-    setPageSize(pageSize);
-    getData(currentPage);
-  };
-
-  useEffect(() => {
-    getData();
-  }, [pageSize, pageNum]);
-
   return (
     <div css={styles}>
-      <Table
-        resizable
-        bordered
-        columns={columns}
-        dataSource={nodeList}
-        pagination={{
-          currentPage: pageNum,
-          pageSize: pageSize,
-          total,
-          onChange,
-          showSizeChanger: true,
-          showTotal: true,
-          showQuickJumper: true,
-        }}
-        loading={loading}
-      />
+      <Table resizable bordered columns={columns} dataSource={tableData} pagination={panination} loading={loading} />
     </div>
   );
 };
