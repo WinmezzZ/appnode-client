@@ -11,14 +11,16 @@ interface UseTableOptions<T extends ApiMethod<any, any>> {
   apiMethod: T;
   apiParams?: T extends (...arg: infer Arg) => MyResponse<Pagination<any, any>> ? Arg[0] : unknown;
   resultListKeyPath: string;
+  pageSize?: number;
+  pageNum?: number;
 }
 
 type ListItem<T> = T extends (...arg: any) => MyResponse<Pagination<any, Array<infer R>>> ? R : unknown;
 
 export function useTable<T extends ApiMethod<any, any>>(options: UseTableOptions<T>) {
   const { apiMethod, apiParams = {}, resultListKeyPath } = options;
-  const [pageSize, setPageSize] = useState(20);
-  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(options.pageSize || 20);
+  const [pageNum, setPageNum] = useState(options.pageNum || 1);
   const [total, setTotal] = useState(0);
   const [tableData, setTableData] = useState<ListItem<T>[]>([]);
   const [loading, setLoading] = useState(false);
