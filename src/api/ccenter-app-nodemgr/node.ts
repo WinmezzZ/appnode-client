@@ -7,7 +7,7 @@ import { request } from '../request';
 import { SocketEffect, useSocket } from '../socket';
 
 /** 桌面菜单接口 */
-export const apiNodeList = (data: ApiNodeListParams) =>
+export const apiNodeList = (data?: ApiNodeListParams) =>
   request<Pagination<'NodeList', NodeList>>('get', 'Node.List', { ...data, api_ccenter_app: 'nodemgr' });
 
 export const usePerformance: SocketEffect<PerformanceResult, { nodeIds: string[] }> = (cb, { nodeIds }) => {

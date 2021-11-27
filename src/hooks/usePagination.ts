@@ -3,26 +3,26 @@ import { useEffect, useState } from 'react';
 import { MyResponse } from '~/api/request';
 import { Pagination } from '~/interface/common/pagination.interface';
 
-interface ApiMethod<K, V> {
-  (...arg: any): MyResponse<Pagination<K, V>>;
+interface ApiMethod<K = any, V = any> {
+  (...arg: any[]): MyResponse<Pagination<K, V>>;
 }
 
-interface UseTableOptions<T extends ApiMethod<any, any>> {
+type TableDataItem<T> = T extends MyResponse<Pagination<any, Array<infer R>>> ? R : unknown;
+
+interface UseTableOptions<T extends ApiMethod> {
   apiMethod: T;
-  apiParams?: T extends (...arg: infer Arg) => MyResponse<Pagination<any, any>> ? Arg[0] : unknown;
+  apiParams?: Parameters<T>[0];
   resultListKeyPath: string;
   pageSize?: number;
   pageNum?: number;
 }
 
-type ListItem<T> = T extends (...arg: any) => MyResponse<Pagination<any, Array<infer R>>> ? R : unknown;
-
-export function useTable<T extends ApiMethod<any, any>>(options: UseTableOptions<T>) {
+export function useTable<T extends ApiMethod>(options: UseTableOptions<T>) {
   const { apiMethod, apiParams = {}, resultListKeyPath } = options;
   const [pageSize, setPageSize] = useState(options.pageSize || 20);
   const [pageNum, setPageNum] = useState(options.pageNum || 1);
   const [total, setTotal] = useState(0);
-  const [tableData, setTableData] = useState<ListItem<T>[]>([]);
+  const [tableData, setTableData] = useState<TableDataItem<ReturnType<T>>[]>([]);
   const [loading, setLoading] = useState(false);
 
   const getData = async (currentPage = pageNum, currentSize = pageSize) => {

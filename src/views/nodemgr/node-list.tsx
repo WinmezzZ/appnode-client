@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { apiNodeList, usePerformance } from '~/api/ccenter-app-nodemgr/node';
 import { DropMenuButton } from '~/components/drop-menu-button';
 import { AgentConnStatusEnum } from '~/config/enum/agent-conn-status.enum';
-import { useTable } from '~/hooks/useTable';
+import { useTable } from '~/hooks/usePagination';
 import { NodeItem } from '~/interface/ccenter-app-nodemgr/node.interface';
 import { history } from '~/route/history';
 

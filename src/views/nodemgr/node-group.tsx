@@ -3,7 +3,7 @@ import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
 import { FC } from 'react';
 
 import { apiNodeGroupList } from '~/api/ccenter-app-nodemgr/node-group.api';
-import { useTable } from '~/hooks/useTable';
+import { useTable } from '~/hooks/usePagination';
 import { NodeGroupItem } from '~/interface/ccenter-app-nodemgr/node-group.interface';
 
 const NodeGroupListPage: FC = () => {
