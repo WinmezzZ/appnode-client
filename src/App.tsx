@@ -1,4 +1,4 @@
-import { ConfigProvider } from '@douyinfe/semi-ui';
+import { ConfigProvider, Spin } from '@douyinfe/semi-ui';
 import { Suspense, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -8,7 +8,7 @@ import RenderRouter from './route';
 import { setGlobalState } from './store/global.store';
 
 const App: React.FC = () => {
-  const { theme } = useSelector(state => state.global);
+  const { theme, loading } = useSelector(state => state.global);
   const dispatch = useDispatch();
 
   const setTheme = (dark = true) => {
@@ -41,7 +41,9 @@ const App: React.FC = () => {
     <ConfigProvider>
       <HistoryRouter history={history}>
         <Suspense fallback={<h1>Loading...</h1>}>
-          <RenderRouter />
+          <Spin wrapperClassName="app-loading-wrapper" spinning={loading}>
+            <RenderRouter />
+          </Spin>
         </Suspense>
       </HistoryRouter>
     </ConfigProvider>

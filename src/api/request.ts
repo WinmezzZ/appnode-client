@@ -5,14 +5,20 @@ import qs from 'query-string';
 
 import { history } from '~/route/history';
 import store from '~/store';
+import { setGlobalState } from '~/store/global.store';
 
 const axiosInstance = axios.create({
   withCredentials: true,
-  timeout: 6000,
+  timeout: 2000,
 });
 
 axiosInstance.interceptors.request.use(
   config => {
+    store.dispatch(
+      setGlobalState({
+        loading: true,
+      }),
+    );
     if (history.location.pathname !== '/login') {
       //
       config.headers = {
@@ -23,12 +29,22 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   error => {
+    store.dispatch(
+      setGlobalState({
+        loading: false,
+      }),
+    );
     Promise.reject(error);
   },
 );
 
 axiosInstance.interceptors.response.use(
   config => {
+    store.dispatch(
+      setGlobalState({
+        loading: false,
+      }),
+    );
     if (config.data?.CODE !== 'ok') {
       Toast.error(config.data.MESSAGE);
 
@@ -43,12 +59,19 @@ axiosInstance.interceptors.response.use(
     return config?.data;
   },
   error => {
+    store.dispatch(
+      setGlobalState({
+        loading: false,
+      }),
+    );
     // if needs to navigate to login page when request exception
     // history.replace('/login');
     let errorMessage = '系统异常';
 
     if (error?.message?.includes('Network Error')) {
       errorMessage = '网络错误，请检查您的网络';
+    } else if (error?.message?.includes('timeout')) {
+      errorMessage = '请求超时，请稍后再试';
     } else {
       errorMessage = error?.message;
     }
