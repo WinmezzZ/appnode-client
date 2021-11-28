@@ -1,5 +1,4 @@
-import { Layout, Nav, Skeleton } from '@douyinfe/semi-ui';
-import { NavItems, NavProps } from '@douyinfe/semi-ui/lib/es/navigation';
+import { Layout, Menu, MenuItemProps, Skeleton } from 'antd';
 import { FC, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -8,30 +7,30 @@ const { Sider, Content } = Layout;
 interface LayoutMainPageProps<T> {
   menu?: T;
   selectNavSideMenuKey: string;
-  onClickMenu?: NavProps['onClick'];
+  onClickMenu?: MenuItemProps['onClick'];
   showWrpperStyle?: boolean;
 }
 
-type ShouldKeyRequid<T> = T extends NavItems
+type ShouldKeyRequid<T> = T extends MenuItemProps[]
   ? LayoutMainPageProps<T>
   : Omit<LayoutMainPageProps<T>, 'selectNavSideMenuKey'>;
 
-export const LayoutMainPage = <T extends NavItems | undefined>(props: ShouldKeyRequid<T>) => {
+export const LayoutMainPage = <T extends MenuItemProps[] | undefined>(props: ShouldKeyRequid<T>) => {
   const { menu, onClickMenu, showWrpperStyle } = props;
 
   return (
     <Layout>
       {menu && (
-        <Sider style={{ backgroundColor: 'var(--semi-color-bg-1)' }}>
-          <Nav
+        <Sider>
+          <Menu
             onClick={onClickMenu}
             style={{ maxWidth: 190, height: '100%' }}
-            items={menu}
             defaultSelectedKeys={[props.selectNavSideMenuKey]}
-            footer={{
-              collapseButton: true,
-            }}
-          />
+          >
+            {menu.map(item => (
+              <Menu.Item key={item.eventKey}>{item.title}</Menu.Item>
+            ))}
+          </Menu>
         </Sider>
       )}
       <Content
@@ -58,7 +57,7 @@ export const LayoutMainPage = <T extends NavItems | undefined>(props: ShouldKeyR
         >
           <Suspense
             fallback={
-              <Skeleton placeholder={<Skeleton.Paragraph rows={2} />} loading={true}>
+              <Skeleton loading={true}>
                 <p>Hello World</p>
               </Skeleton>
             }

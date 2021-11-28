@@ -1,4 +1,5 @@
-import { ConfigProvider, Spin } from '@douyinfe/semi-ui';
+import { ConfigProvider, Spin } from 'antd';
+import zh_CN from 'antd/lib/locale/zh_CN';
 import { Suspense, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -6,6 +7,11 @@ import { history, HistoryRouter } from '~/route/history';
 
 import RenderRouter from './route';
 import { setGlobalState } from './store/global.store';
+
+ConfigProvider.config({
+  prefixCls: 'appnode',
+  iconPrefixCls: 'appnode',
+});
 
 const App: React.FC = () => {
   const { theme, loading } = useSelector(state => state.global);
@@ -38,12 +44,11 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <ConfigProvider>
+    <ConfigProvider componentSize="small" iconPrefixCls="appnode" locale={zh_CN}>
       <HistoryRouter history={history}>
         <Suspense fallback={<h1>Loading...</h1>}>
-          <Spin wrapperClassName="app-loading-wrapper" spinning={loading}>
-            <RenderRouter />
-          </Spin>
+          <Spin spinning={loading} className="app-loading-wrapper" tip="加载中..."></Spin>
+          <RenderRouter />
         </Suspense>
       </HistoryRouter>
     </ConfigProvider>

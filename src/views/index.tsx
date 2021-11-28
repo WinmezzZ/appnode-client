@@ -7,8 +7,7 @@ import {
   IconSun,
   IconUser,
 } from '@douyinfe/semi-icons';
-import { Button, Dropdown, Layout, Nav, Tooltip, Typography } from '@douyinfe/semi-ui';
-import { NavItemProps } from '@douyinfe/semi-ui/lib/es/navigation';
+import { Button, Dropdown, Layout, Menu, MenuItemProps, Tooltip, Typography } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
@@ -19,16 +18,15 @@ import { setGlobalState } from '~/store/global.store';
 import { getStrTimesIndex } from '~/utils/getStrTimesIndex';
 
 const { Header } = Layout;
-const { Title } = Typography;
 
 const LayoutPage: FC = () => {
   const { theme } = useSelector(state => state.global);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const navItems: NavItemProps[] = panelData.map(item => ({
-    text: item.PanelName,
-    itemKey: item.PanelCode,
+  const navItems: MenuItemProps[] = panelData.map(item => ({
+    title: item.PanelName,
+    key: item.PanelCode,
   }));
   const [selectNavKey, setSelectNavKey] = useState<string>(() => {
     const index0 = getStrTimesIndex(location.pathname, '/', 0);
@@ -37,7 +35,7 @@ const LayoutPage: FC = () => {
 
     return activeKey;
   });
-  const [navSideMenu, setNavSideMenu] = useState<NavItemProps[]>([]);
+  const [navSideMenu, setNavSideMenu] = useState<MenuItemProps[]>([]);
 
   const [selectNavSideMenuKey, setSelectNavSideMenuKey] = useState<string>(() => {
     const index1 = getStrTimesIndex(location.pathname, '/', 1);
@@ -51,30 +49,31 @@ const LayoutPage: FC = () => {
     onClickNav(selectNavKey, 0, false);
   }, []);
 
-  const onClickNav = (itemKey: string, level: number, jump = true) => {
-    const panel = panelData.find(item => item.PanelCode === (level === 0 ? itemKey : selectNavKey));
+  const onClickNav = (key: string, level: number, jump = true) => {
+    const panel = panelData.find(item => item.PanelCode === (level === 0 ? key : selectNavKey));
 
     if (!panel) return;
 
-    const menu = panel.Menus.map(item => ({
-      text: item.name,
-      itemKey: item.code,
+    const menu: MenuItemProps[] = panel.Menus.map(item => ({
+      title: item.name,
+      key: item.code,
       url: item.url,
     }));
 
     if (level === 0) {
-      setSelectNavKey(itemKey);
+      console.log(menu[0]);
+      setSelectNavKey(key);
       setNavSideMenu(menu);
-      setSelectNavSideMenuKey(menu[0].itemKey);
-      jump && navigate('/' + itemKey + '/' + menu[0].itemKey);
+      setSelectNavSideMenuKey(menu[0].key);
+      jump && navigate('/' + key + '/' + menu[0].key);
 
       return;
     }
 
     if (level === 1) {
-      setSelectNavSideMenuKey(itemKey);
+      setSelectNavSideMenuKey(key);
       const level1Url = '/' + selectNavKey;
-      const level2Url = `/${itemKey}`;
+      const level2Url = `/${key}`;
 
       jump && navigate(level1Url + level2Url);
     }
@@ -92,73 +91,60 @@ const LayoutPage: FC = () => {
   };
 
   return (
-    <Layout style={{ border: '1px solid var(--semi-color-border)' }}>
-      <Header style={{ backgroundColor: 'var(--semi-color-bg-1)' }}>
+    <Layout>
+      <Header>
         <div>
-          <Nav
-            mode="horizontal"
-            selectedKeys={[selectNavKey]}
-            items={navItems}
-            onClick={d => onClickNav(d.itemKey as string, 0)}
-          >
-            <Nav.Header>
-              <Title style={{ width: '100px' }} heading={3}>
-                APPNODE
-              </Title>
-            </Nav.Header>
+          <Menu mode="horizontal" selectedKeys={[selectNavKey]} onClick={d => onClickNav(d.key, 0)}>
+            {navItems.map(item => (
+              <Menu.Item key={item.key}>{item.title}</Menu.Item>
+            ))}
+          </Menu>
+          <div>
+            <Tooltip title={`切换到${theme === 'dark' ? '浅色' : '深色'}主题`}>
+              <Button
+                onClick={onSwitchTheme}
+                icon={theme === 'light' ? <IconMoon size="large" /> : <IconSun size="large" />}
+                style={{
+                  color: 'var(--semi-color-text-2)',
+                  marginRight: '12px',
+                }}
+              />
+            </Tooltip>
+            <Tooltip title="消息通知">
+              <Button
+                icon={<IconBell size="large" />}
+                style={{
+                  color: 'var(--semi-color-text-2)',
+                  marginRight: '12px',
+                }}
+              />
+            </Tooltip>
 
-            <Nav.Footer>
-              <Tooltip content={`切换到${theme === 'dark' ? '浅色' : '深色'}主题`}>
-                <Button
-                  onClick={onSwitchTheme}
-                  theme="borderless"
-                  icon={theme === 'light' ? <IconMoon size="large" /> : <IconSun size="large" />}
-                  style={{
-                    color: 'var(--semi-color-text-2)',
-                    marginRight: '12px',
-                  }}
-                />
-              </Tooltip>
-              <Tooltip content="消息通知">
-                <Button
-                  theme="borderless"
-                  icon={<IconBell size="large" />}
-                  style={{
-                    color: 'var(--semi-color-text-2)',
-                    marginRight: '12px',
-                  }}
-                />
-              </Tooltip>
-
-              <Dropdown
-                position="topLeft"
-                render={
-                  <Dropdown.Menu>
-                    <Dropdown.Item icon={<IconSetting />}>设置</Dropdown.Item>
-                    <Dropdown.Item icon={<IconHelpCircleStroked />}>帮助</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item icon={<IconExit />} type="danger">
-                      退出登录
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                }
-              >
-                <Button
-                  theme="borderless"
-                  icon={<IconUser size="large" />}
-                  style={{
-                    color: 'var(--semi-color-text-2)',
-                  }}
-                />
-              </Dropdown>
-            </Nav.Footer>
-          </Nav>
+            <Dropdown
+              placement="topLeft"
+              overlay={
+                <Menu>
+                  <Menu.Item icon={<IconSetting />}>设置</Menu.Item>
+                  <Menu.Item icon={<IconHelpCircleStroked />}>帮助</Menu.Item>
+                  <Menu.Divider />
+                  <Menu.Item icon={<IconExit />}>退出登录</Menu.Item>
+                </Menu>
+              }
+            >
+              <Button
+                icon={<IconUser size="large" />}
+                style={{
+                  color: 'var(--semi-color-text-2)',
+                }}
+              />
+            </Dropdown>
+          </div>
         </div>
       </Header>
       <LayoutMainPage
         menu={navSideMenu}
         selectNavSideMenuKey={selectNavSideMenuKey}
-        onClickMenu={e => onClickNav(e.itemKey as string, 1)}
+        onClickMenu={e => onClickNav(e.key, 1)}
         showWrpperStyle
       />
     </Layout>

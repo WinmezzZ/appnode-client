@@ -1,5 +1,6 @@
 import { Table } from '@douyinfe/semi-ui';
 import { ColumnProps } from '@douyinfe/semi-ui/lib/es/table';
+import { Button } from 'antd';
 import { FC } from 'react';
 
 import { apiNodeGroupList } from '~/api/ccenter-app-nodemgr/node-group.api';
@@ -40,7 +41,7 @@ const columns: ColumnProps<NodeGroupItem>[] = [
     title: '操作',
     width: 160,
     render(_, _row) {
-      return '修改';
+      return <Button type="primary">修改</Button>;
     },
   },
 ];
