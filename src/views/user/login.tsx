@@ -9,8 +9,8 @@ import { apiLogin } from '~/api/ccenter-app-usermgr/user';
 import { setUserState } from '~/store/user.store';
 
 const initValues = {
-  Username: 'admin',
-  Password: 'Winme0308_',
+  Username: '',
+  Password: '',
   // remember: true
 };
 
